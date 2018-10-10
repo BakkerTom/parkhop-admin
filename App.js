@@ -1,21 +1,17 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Rides, Parks } from './views';
+import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>It works now right?</Text>
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+const rideNavigator = createStackNavigator({
+  Index: { screen: Rides }
 });
+
+const parkNavigator = createStackNavigator({
+  Index: { screen: Parks }
+});
+
+const App = createBottomTabNavigator({
+  Rides: { screen: rideNavigator },
+  Parks: { screen: parkNavigator },
+});
+
+export default App;
