@@ -1,17 +1,28 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 export class ListItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onPress = this.onPress.bind(this);
+  }
+
+  onPress() {
+    this.props.onPressItem(this.props.id);
+  }
+
   render() {
     const { title, subtitle, thumbnail } = this.props;
     return (
-      <View style={styles.item}>
-        <Image  style={styles.thumbnail} source={{uri: `http://programmerenissexy.nl${thumbnail}`}}></Image>
-        <View style={styles.text}>
-          <Text style={styles.title} numberOfLines={1}>{title}</Text>
-          <Text style={styles.subtitle} numberOfLines={1}>{subtitle}</Text>
+      <TouchableOpacity onPress={this.onPress}>
+        <View style={styles.item}>
+          <Image  style={styles.thumbnail} source={{uri: `http://programmerenissexy.nl${thumbnail}`}}></Image>
+          <View style={styles.text}>
+            <Text style={styles.title} numberOfLines={1}>{title}</Text>
+            <Text style={styles.subtitle} numberOfLines={1}>{subtitle}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 }

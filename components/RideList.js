@@ -1,14 +1,17 @@
 import React from "react";
 import { FlatList, Text, StyleSheet } from "react-native";
-import { ListItem } from './ListItem';
+import { ListItem } from "./ListItem";
 
 export class RideList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       rides: [],
-      loading: true,
+      loading: true
     };
+
+    this.renderItem = this.renderItem.bind(this);
+    this.didPressItem = this.didPressItem.bind(this);
   }
 
   componentDidMount() {
@@ -20,8 +23,21 @@ export class RideList extends React.Component {
       .catch(error => console.log(error));
   }
 
-  renderItem({item}) {
-    return <ListItem title={item.name} subtitle={item.park.name} thumbnail={item.thumbnail_url} />;
+  didPressItem(id) {
+    const { navigate } = this.props.navigation;
+    navigate("Show", { id: id });
+  }
+
+  renderItem({ item }) {
+    return (
+      <ListItem
+        id={item.id}
+        title={item.name}
+        subtitle={item.park.name}
+        thumbnail={item.thumbnail_url}
+        onPressItem={this.didPressItem}
+      />
+    );
   }
 
   keyExtractor(item) {
@@ -29,7 +45,9 @@ export class RideList extends React.Component {
   }
 
   render() {
-    return this.state.loading ? <Text>loading...</Text> : (
+    return this.state.loading ? (
+      <Text>loading...</Text>
+    ) : (
       <FlatList
         style={styles.container}
         data={this.state.rides}
@@ -43,6 +61,6 @@ export class RideList extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-  },
+    backgroundColor: "#fff"
+  }
 });

@@ -8,7 +8,7 @@ export class Rides extends React.Component {
   };
   render() {
     return (
-      <RideList />
+      <RideList navigation={this.props.navigation}/>
     );
   }
 }
