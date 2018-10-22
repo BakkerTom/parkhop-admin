@@ -5,22 +5,9 @@ import { ListItem } from "./ListItem";
 export class RideList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      rides: [],
-      loading: true
-    };
 
     this.renderItem = this.renderItem.bind(this);
     this.didPressItem = this.didPressItem.bind(this);
-  }
-
-  componentDidMount() {
-    fetch("http://programmerenissexy.nl/api/rides")
-      .then(resp => resp.json())
-      .then(data => {
-        this.setState({ loading: false, rides: data });
-      })
-      .catch(error => console.log(error));
   }
 
   didPressItem(id) {
@@ -45,12 +32,10 @@ export class RideList extends React.Component {
   }
 
   render() {
-    return this.state.loading ? (
-      <Text>loading...</Text>
-    ) : (
+    return (
       <FlatList
         style={styles.container}
-        data={this.state.rides}
+        data={this.props.rides}
         renderItem={this.renderItem}
         keyExtractor={this.keyExtractor}
       />

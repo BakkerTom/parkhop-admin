@@ -16,7 +16,7 @@ export class TextField extends React.Component {
       return "";
     }
 
-    if(!isNaN(value)) {
+    if (!isNaN(value)) {
       return value.toString();
     }
 
@@ -27,7 +27,9 @@ export class TextField extends React.Component {
     const { title, value } = this.props;
     return (
       <View style={styles.inputContainer}>
-        <Text style={styles.labelView}>{title}</Text>
+        <Text style={styles.labelView} numberOfLines={1}>
+          {title}
+        </Text>
         <TextInput
           style={styles.inputView}
           placeholder={title}
