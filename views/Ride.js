@@ -5,9 +5,12 @@ import {
   Button,
   StyleSheet,
   ScrollView,
-  TextInput
+  Image,
+  TouchableOpacity,
 } from "react-native";
+import { Constants, ImagePicker, Permissions } from "expo";
 import { TextField } from "../components/TextField";
+import { Notification } from "../components/Notification";
 
 export class Ride extends React.Component {
   constructor(props) {
@@ -17,12 +20,16 @@ export class Ride extends React.Component {
       values: {},
       ride: {},
       isLoading: true,
+      image: null,
+      succesOpen: false,
       rideId: props.navigation.getParam("id", 0)
     };
 
     this.setValue = this.setValue.bind(this);
     this.didPressSave = this.didPressSave.bind(this);
     this.load = this.load.bind(this);
+    this.didPressImage = this.didPressImage.bind(this);
+    this.notifySuccess = this.notifySuccess.bind(this);
 
     this.props.navigation.setParams({ didPressSave: this.didPressSave });
   }
@@ -54,7 +61,7 @@ export class Ride extends React.Component {
   }
 
   didPressSave() {
-    console.log("-- VALUES TO UPDATE", this.state.values);
+    // console.log("-- VALUES TO UPDATE", this.state.values);
     const { rideId } = this.state;
     fetch(`http://programmerenissexy.nl/api/rides/${rideId}`, {
       method: "PATCH",
@@ -63,8 +70,28 @@ export class Ride extends React.Component {
       },
       body: JSON.stringify({ ride: this.state.values })
     }).then(resp => {
+      this.notifySuccess();
       console.log("--PATCH RESPONSE", resp);
     });
+  }
+
+  async didPressImage() {
+    const { status: cameraRollPerm } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
+    if (cameraRollPerm !== "granted") return;
+    let result = await ImagePicker.launchImageLibraryAsync({ base64: true });
+    if (result.cancelled) return;
+    this.setState({ image: result.uri });
+    this.setValue("image", `data:image/jpeg;base64,${result.base64}`);
+  }
+
+  notifySuccess() {
+    this.setState({succesOpen: true});
+
+    setTimeout(() => {
+      this.setState({succesOpen: false});
+    }, 3000);
   }
 
   setValue(name, value) {
@@ -79,13 +106,23 @@ export class Ride extends React.Component {
   }
 
   render() {
-    const { isLoading, ride } = this.state;
+    const { isLoading, ride, image, succesOpen } = this.state;
     return isLoading ? (
       <Text>Loading...</Text>
     ) : (
       <ScrollView style={{ flex: 1 }}>
+        <Notification isOpen={succesOpen}/>
         <View style={styles.headerView}>
-          <View style={styles.thumbnail} />
+          <TouchableOpacity onPress={this.didPressImage}>
+            <Image
+              style={styles.thumbnail}
+              source={
+                image
+                  ? { uri: image }
+                  : { uri: `http://programmerenissexy.nl${ride.image}` }
+              }
+            />
+          </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <TextField
               name="name"
@@ -128,6 +165,9 @@ export class Ride extends React.Component {
   }
 }
 
+// We can use this to make the overlay fill the entire width
+
+
 const styles = StyleSheet.create({
   headerView: {
     flex: 1,
@@ -141,11 +181,11 @@ const styles = StyleSheet.create({
   thumbnail: {
     width: 64,
     height: 64,
-    backgroundColor: "salmon",
+    backgroundColor: "#efefef",
     borderRadius: 8,
     marginHorizontal: 16
   },
   section: {
-    marginBottom: 8,
-  }
+    marginBottom: 8
+  },
 });
