@@ -6,9 +6,9 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
-import { Constants, ImagePicker, Permissions } from "expo";
+import { Constants, ImagePicker, Permissions, MapView } from "expo";
 import { TextField } from "../components/TextField";
 import { Notification } from "../components/Notification";
 
@@ -30,7 +30,7 @@ export class Ride extends React.Component {
     this.load = this.load.bind(this);
     this.didPressImage = this.didPressImage.bind(this);
     this.notifySuccess = this.notifySuccess.bind(this);
-
+    this.onDragEnd = this.onDragEnd.bind(this);
     this.props.navigation.setParams({ didPressSave: this.didPressSave });
   }
 
@@ -87,10 +87,10 @@ export class Ride extends React.Component {
   }
 
   notifySuccess() {
-    this.setState({succesOpen: true});
+    this.setState({ succesOpen: true });
 
     setTimeout(() => {
-      this.setState({succesOpen: false});
+      this.setState({ succesOpen: false });
     }, 3000);
   }
 
@@ -105,13 +105,29 @@ export class Ride extends React.Component {
     });
   }
 
+  onDragEnd({ nativeEvent }) {
+    const { coordinate } = nativeEvent;
+    this.setValue('lat', coordinate.latitude);
+    this.setValue('lon', coordinate.longitude);
+
+    this.setState({
+      ride: {
+        ...this.state.ride,
+        lat: coordinate.latitude,
+        lon: coordinate.longitude,
+      }
+    })
+    // console.log("--Coordinates", nativeEvent.coordinate);
+  }
+
   render() {
     const { isLoading, ride, image, succesOpen } = this.state;
+
     return isLoading ? (
       <Text>Loading...</Text>
     ) : (
       <ScrollView style={{ flex: 1 }}>
-        <Notification isOpen={succesOpen}/>
+        <Notification isOpen={succesOpen} />
         <View style={styles.headerView}>
           <TouchableOpacity onPress={this.didPressImage}>
             <Image
@@ -159,6 +175,21 @@ export class Ride extends React.Component {
             setValue={this.setValue}
             value={ride.lon}
           />
+          <MapView
+            style={{ height: 320 }}
+            initialRegion={{
+              latitude: ride.lat,
+              longitude: ride.lon,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421
+            }}
+          >
+            <MapView.Marker
+              draggable
+              coordinate={{ latitude: ride.lat, longitude: ride.lon }}
+              onDragEnd={this.onDragEnd}
+            />
+          </MapView>
         </View>
       </ScrollView>
     );
@@ -166,7 +197,6 @@ export class Ride extends React.Component {
 }
 
 // We can use this to make the overlay fill the entire width
-
 
 const styles = StyleSheet.create({
   headerView: {
@@ -187,5 +217,5 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 8
-  },
+  }
 });

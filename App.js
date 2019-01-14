@@ -1,4 +1,4 @@
-import { Rides, Parks, Ride } from './views';
+import { Rides, Parks, Ride, Park } from './views';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 const rideNavigator = createStackNavigator({
@@ -7,7 +7,8 @@ const rideNavigator = createStackNavigator({
 });
 
 const parkNavigator = createStackNavigator({
-  Index: { screen: Parks }
+  Index: { screen: Parks },
+  Show: { screen: Park },
 });
 
 const App = createBottomTabNavigator({

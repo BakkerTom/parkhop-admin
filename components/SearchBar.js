@@ -30,7 +30,6 @@ export class SearchBar extends React.Component {
           onSubmitEditing={this.didPressSearch}
           onChangeText={this.onChange}
           returnKeyType="search"
-          // value={this.state.value}
         />
       </View>
     );

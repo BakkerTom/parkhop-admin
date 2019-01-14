@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 export class ListItem extends React.Component {
   constructor(props) {
@@ -16,10 +16,19 @@ export class ListItem extends React.Component {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View style={styles.item}>
-          <Image  style={styles.thumbnail} source={{uri: `http://programmerenissexy.nl${thumbnail}`}}></Image>
+          {thumbnail && (
+            <Image
+              style={styles.thumbnail}
+              source={{ uri: `http://programmerenissexy.nl${thumbnail}` }}
+            />
+          )}
           <View style={styles.text}>
-            <Text style={styles.title} numberOfLines={1}>{title}</Text>
-            <Text style={styles.subtitle} numberOfLines={1}>{subtitle}</Text>
+            <Text style={styles.title} numberOfLines={1}>
+              {title}
+            </Text>
+            <Text style={styles.subtitle} numberOfLines={1}>
+              {subtitle}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -29,16 +38,16 @@ export class ListItem extends React.Component {
 
 const styles = StyleSheet.create({
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 8,
     paddingHorizontal: 16
   },
   title: {
     fontSize: 21,
-    fontWeight: '600',
-    width: '100%',
-    marginBottom: 2
+    fontWeight: "600",
+    width: "100%",
+    marginBottom: 2,
   },
   text: {
     flex: 1
@@ -51,6 +60,6 @@ const styles = StyleSheet.create({
     height: 64,
     marginRight: 16,
     borderRadius: 16,
-    backgroundColor: '#efefef',
+    backgroundColor: "#efefef"
   }
 });
